@@ -6,7 +6,7 @@ def depositos_(valor, saldo,/,):#valor e saldo
             print("Valor depositado com sucesso!")
         return saldo
 
-def saques_(*,valor,sald):
+def saques_(*,valor = int,sald):
         while True:
             if valor <= 0:
                 print("Valor Inválido")
@@ -59,7 +59,7 @@ MENU
                 print(f"Despoito[{i+1}]: {depositos[i]}")
         for i in range(len(saques)):
                 print(f"Saque[{i+1}]: {saques[i]}")
-        print(f"Saldo: R$ {saldo:.2f}")    
+        print(f"Saldo: R$ {saldo}")    
     #Encerrar programa                
     if opcao ==0:
         break
