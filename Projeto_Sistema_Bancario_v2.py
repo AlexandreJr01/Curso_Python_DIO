@@ -6,20 +6,19 @@ def depositos_(valor, saldo,/,):#valor e saldo
             print("Valor depositado com sucesso!")
         return saldo
 
-def saques_(valor, saldo ,limite):
-            if valor<= 0:
+def saques_(*,valor,sald):
+        while True:
+            if valor <= 0:
                 print("Valor Inválido")
             else:
-                if valor_de_saque > saldo:
+                if valor > sald:
                     print("Saldo insuficiente")
                     break
                 else:
-                    saldo -= float(valor_de_saque)
-                    saques.append(f"R$ {valor_de_saque},00")
-                    cont_de_saq += 1
+                    sald -= float(valor)
                     print("Saque realizado com sucesso")
                     break
-            return saldo    
+            return sald  
 
 opcao = int
 saldo = 0.0
@@ -43,23 +42,16 @@ MENU
             depositos.append(f"R$ {valor_de_deposito}")
     #Opção de saque
     if opcao == 2:
-        while True:
-            if cont_de_saq == 3:
-                print("Número de saques excedido")
-                break
-            valor_de_saque = int(input("Digite valor a ser sacado: R$ "))
-            if valor_de_saque <= 0:
-                print("Valor Inválido")
-            else:
-                if valor_de_saque > saldo:
-                    print("Saldo insuficiente")
+            while True:
+                if cont_de_saq == 3:
+                    print("Limite de saques atingido!")
                     break
                 else:
-                    saldo -= float(valor_de_saque)
-                    saques.append(f"R$ {valor_de_saque},00")
+                    valor_de_saque = int(input("Digite valor para saque: R$ "))
+                    saques.append(f"R$ {valor_de_saque}")
+                    saldo = saques_(valor = valor_de_saque, sald = saldo)
                     cont_de_saq += 1
-                    print("Saque realizado com sucesso")
-                    break
+                    break    
     #Opção de extrato
     if opcao == 3:
         print("Extrato")
