@@ -1,22 +1,29 @@
-def depositos_(valor, saldo,/,):#valor e saldo
+def depositos(valor, saldo,extrato,/,):#valor e saldo
         if  valor <= 0:
-            print("Valo Inválido")
+            print("Valor Inválido")
         else:
             saldo += float(valor)
+            extrato[0].append(f"R$ {valor_de_deposito}")
             print("Valor depositado com sucesso!")
-        return saldo
+        return saldo , extrato
 
-def saques_(*,saldo,valor,contador):
-        saldo -= float(valor)
-        contador += 1
-        return saldo,contador
+def saques(*,saldo,valor,extrato,contador):
+        if valor <= 0:
+            print("Valor Inválido")
+        elif valor > saldo:
+            print("Saldo Insuficiente")
+        else:
+            saldo -= float(valor)
+            extrato[1].append(f"R$ {float(valor_de_saque)} ")
+            contador += 1
+        return saldo, extrato, contador
 
+def 
 
 opcao = int
 Saldo = 0.0
-depositos = []
-saques = []
-cont_de_saq = 0
+Extrato = [[],[]]
+Contador = 0
 while True:
     menu_de_ops = f"""
 MENU
@@ -30,32 +37,30 @@ MENU
     #Opção de deposito
     if opcao == 1:
             valor_de_deposito = int(input("Digite valor a ser depositado: R$ "))
-            Saldo = depositos_(valor_de_deposito,Saldo)
-            depositos.append(f"R$ {valor_de_deposito}")
+            retorno = depositos(valor_de_deposito,Saldo,Extrato)
+            Saldo = retorno[0]
+            extrato = retorno[1]
     #Opção de saque
     if opcao == 2:
             while True:
+                if Contador == 3:
+                    print("Limite de saques atingido")
+                    break
                 valor_de_saque = int(input("Digite valor de saque: R$ "))
-                if valor_de_saque <=0:
-                    print("Valor Inválido")
-                elif valor_de_saque > Saldo:
-                    print("Saldo Insuficiente")
-                    break
-                else:
-                    retorno = saques_(saldo = Saldo, valor = valor_de_saque,contador = cont_de_saq)
-                    Saldo = retorno[0]
-                    saques.append(f"R$ {float(valor_de_saque)} ")
-                    cont_de_saq = retorno[1]
-                    break
+                retorno = saques(saldo = Saldo, valor = valor_de_saque, extrato = Extrato ,contador = Contador)
+                Saldo = retorno[0]
+                Extrato = retorno[1]
+                Contador= retorno[2]
+                break
             
             
     #Opção de extrato
     if opcao == 3:
         print("Extrato")
-        for i in  range(len(depositos)):
-                print(f"Despoito[{i+1}]: {depositos[i]}")
-        for i in range(len(saques)):
-                print(f"Saque[{i+1}]: {saques[i]}")
+        for i in  range(len(extrato[0])):
+                print(f"Despoito[{i+1}]: {extrato[0][i]}")
+        for i in range(len(extrato[1])):
+                print(f"Saque[{i+1}]: {extrato[1][i]}")
         print(f"Saldo: R$ {Saldo}")    
     #Encerrar programa                
     if opcao ==0:
