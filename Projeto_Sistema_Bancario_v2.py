@@ -18,7 +18,13 @@ def saques(*,saldo,valor,extrato,contador):
             contador += 1
         return saldo, extrato, contador
 
-def 
+def extratos(saldo,/,*, extrato):
+        print("Extrato")
+        for i in  range(len(extrato[0])):
+                print(f"Despoito[{i+1}]: {extrato[0][i]}")
+        for i in range(len(extrato[1])):
+                print(f"Saque[{i+1}]: {extrato[1][i]}")
+        print(f"Saldo: R$ {saldo}")
 
 opcao = int
 Saldo = 0.0
@@ -56,12 +62,7 @@ MENU
             
     #Opção de extrato
     if opcao == 3:
-        print("Extrato")
-        for i in  range(len(extrato[0])):
-                print(f"Despoito[{i+1}]: {extrato[0][i]}")
-        for i in range(len(extrato[1])):
-                print(f"Saque[{i+1}]: {extrato[1][i]}")
-        print(f"Saldo: R$ {Saldo}")    
+        extratos(Saldo, extrato = Extrato)   
     #Encerrar programa                
     if opcao ==0:
         break
