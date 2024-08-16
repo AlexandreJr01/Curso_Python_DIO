@@ -1,3 +1,24 @@
+def cadastro(lista = []):
+    lista_de_usuario = lista
+    nome = input("Digite seu nome: ")
+    cpf = int(input("Digite seu CPF: "))
+    data_de_nascimento = input("Digite sua data de nascimento: ")
+    print("Endereço")
+    cidade = input("Cidade: ")
+    bairro = input("Bairro: ")
+    rua = input("Rua: ")
+    numero = input("Número: ")
+    endereço = f"{rua},{numero} -{bairro}-{cidade}."
+
+    usuario = {
+    "Nome": nome,
+    "CPF": cpf,
+    "Data de nascimento": data_de_nascimento,
+    "Endereço": endereço,
+    }
+    lista_de_usuario.append(usuario)
+    return lista_de_usuario
+
 def depositos(valor, saldo,extrato,/,):#valor e saldo
         if  valor <= 0:
             print("Valor Inválido")
