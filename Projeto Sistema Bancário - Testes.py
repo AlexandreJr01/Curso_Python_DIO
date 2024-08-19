@@ -2,13 +2,17 @@ def cadastro(lista = []):
     lista_de_usuario = lista
     nome = input("Digite seu nome: ")
     cpf = int(input("Digite seu CPF: "))
+    for i in range(len(lista_de_usuario)):
+        if cpf == lista_de_usuario[i]["CPF"]:
+            print("CPF já cadastrado")
+            return lista_de_usuario
     data_de_nascimento = input("Digite sua data de nascimento: ")
     print("Endereço")
     cidade = input("Cidade: ")
     bairro = input("Bairro: ")
     rua = input("Rua: ")
     numero = input("Número: ")
-    endereço = f"{rua},{numero} -{bairro}-{cidade}."
+    endereço = f"{rua},{numero} -{bairro} - {cidade}."
 
     usuario = {
     "Nome": nome,
