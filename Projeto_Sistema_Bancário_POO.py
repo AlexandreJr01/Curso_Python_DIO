@@ -1,14 +1,14 @@
+import textwrap
 from abc import ABC, abstractmethod
 from datetime import datetime
 
 class Cliente:
     def __init__(self, endereco):
-            self.endereco = endereco
-            self.contas = []
+        self.endereco = endereco
+        self.contas = []
 
     def realizar_transacao(self, conta, transacao):
         transacao.registrar(conta)
-        
     
     def adicionar_conta(self, conta):
         self.contas.append(conta)
@@ -55,7 +55,7 @@ class Conta:
         return self._historico
     
     def sacar(self,valor):
-        saldo = self._saldo
+        saldo = self.saldo
         if valor > saldo:
             print("Você não possui saldo suficiente")
         elif valor > 0:
@@ -69,7 +69,7 @@ class Conta:
     
     def depositar(self, valor):
         if valor > 0:
-            self._saldo += valor
+            self.saldo += valor
             print("Deposito Realizado com Sucesso")
         else:
             print("Valor Inválido")
@@ -80,8 +80,8 @@ class Conta:
 class Conta_Corrente(Conta):
     def __init__(self, numero_conta, cliente, limite = 500, limite_saque = 3):
         super().__init__(numero_conta, cliente)           
-        self.limite = limite
-        self.limite_saque = limite_saque
+        self._limite = limite
+        self._limite_saque = limite_saque
     
     def sacar(self,valor):
         numero_saques = len([transacao for transacao in self._historico.transacoes if transacao["Tipo"] == Saque.__name__])
@@ -104,7 +104,6 @@ class Conta_Corrente(Conta):
         
     """
 
-
 class Historico:
     def __init__(self):
         self._transacoes = []
@@ -124,7 +123,6 @@ class Historico:
     
 class Transacao(ABC):
     @property
-    @abstractmethod
     def valor(self):
         pass
     
@@ -140,7 +138,7 @@ class Saque(Transacao):
     def valor(self):
         return self._valor
     
-    def Registrar(self, conta):
+    def registrar(self, conta):
         sucesso_transacao = conta.sacar(self.valor)
         
         if sucesso_transacao:
@@ -160,16 +158,19 @@ class Deposito(Transacao):
         if sucesso_transacao:
             conta.historico.adicionar_transacao(self)
 
-
-def menu_administrador():
+def menu():
     menu = """
     ========|MENU|========
     [1]Listar Contas
     [2]Registrar Usuário
-    [3]Acessar Menu de Usúario
+    [3]Criar Conta
+    [4]Depositar
+    [5]Sacar
+    [6]Extrato
     [0]Encerrar programa
     """
-    opcao = input("Digite a opção:")
+    print(menu)
+    opcao = int(input("Digite a opção:"))
     return opcao
 
 def filtro(cpf, clientes):
@@ -179,4 +180,132 @@ def filtro(cpf, clientes):
 #Verificar se existe se o usuário possui conta
 def recuperar_conta_cliente(cliente):
     if not cliente.contas:
-        print("")
+        print("Cliente não possui conta cadastrada")
+        return 
+
+# FIXME:Para não permitir cliente escolher a conta
+    return cliente.contas[0]
+
+def Depositar(clientes):
+    cpf = input("Digite seu CPF: ")
+    cliente = filtro(cpf, clientes)
+    
+    if not cliente:
+        print("Cliente Não encontrado")
+        return
+    
+    valor = float(input("Digite valor do deposito: "))
+    transacao = Deposito(cliente)
+    
+    conta = recuperar_conta_cliente(cliente)
+    
+    if not conta:
+        return
+    
+    cliente.relizar_transacao(conta,transacao)
+
+def Sacar(clientes):
+    cpf = input("Digite seu CPF: ")
+    cliente = filtro(cpf, clientes)
+    
+    if not cliente:
+        print("Cliente Não encontrado")
+        return
+    
+    valor = float(input("Digite valor do saque: "))
+    transacao = Saque(cliente)
+    
+    conta = recuperar_conta_cliente(cliente)
+    
+    if not conta:
+        return
+    
+    cliente.relizar_transacao(conta,transacao)
+
+def Extrato(clientes):
+    cpf = input("Digite seu CPF: ")
+    cliente = filtro(cpf, clientes)
+    
+    if not cliente:
+        print("Cliente não encontrado")
+        
+    conta = recuperar_conta_cliente(cliente)
+    
+    if not conta:
+        return
+    
+    print("\n================ EXTRATO ================")
+    transacoes  = conta.historico.transacoes
+    
+    extrato = ""
+    if not transacoes:
+        extrato = "Sem registros de movimentações."
+    else:
+        for transacao in transacoes:
+            extrato += f"\n{transacao["Tipo"]}:\n\tR$ {transacao["Valor"]: .2f}"
+    
+    print(extrato)
+    print(f"\nSaldo:\n\tR$ {conta.saldo: .2f}")
+    print("==========================================")
+    
+def Criar_Cliente(clientes):
+    cpf = input("Digite seu CPF: ")
+    cliente = filtro(cpf, cliente)
+    
+    if cliente:
+        print("\nCPF já registrado")
+        return
+    
+    nome = input("Digite seu número completo: ")
+    data_nascimento = input("Digite sua data de nascimento:")
+    endereco = input("Digite seu endereço")
+    
+    cliente =  Registro_Cliente(nome = nome, data_nascimento=data_nascimento, cpf=cpf, endereco= endereco)
+    
+    clientes.append(cliente)
+    
+    print("\nCliente registrado com sucesso")    
+    
+def Criar_Conta(numero_conta, clientes, contas):
+    cpf = input("Digite seu CPF:")
+    cliente = filtro(cpf, clientes)
+    
+    if not cliente:
+        print("\nCliente não encontrado")
+        return
+    
+    conta = Conta_Corrente.criar_conta(numero_conta = numero_conta,cliente = cliente )
+    contas.append(conta)
+    cliente.contas.append(conta)
+    
+    print("\n Conta criada com sucesso")
+    
+def Exibir_Contas(contas):
+    for conta in contas:
+        print("="*100)
+        print(textwrap.dedent(str(conta)))
+    
+     
+def main():
+    clientes = []
+    contas = []
+    
+    while True:
+        opcao = menu()
+        if opcao == 1:
+            Exibir_Contas(contas)
+        elif opcao == 2:
+            Criar_Cliente(clientes)
+        elif opcao == 3:
+            numero_conta = len(contas) + 1
+            Criar_Conta(numero_conta, clientes, contas)
+        elif opcao == 4:
+            Depositar(clientes)
+        elif opcao == 5:
+            Sacar(clientes)
+        elif opcao == 6:
+            Exibir_Contas(clientes)
+        elif opcao == 0:
+            break
+        
+main()
